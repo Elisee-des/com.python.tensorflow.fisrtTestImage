@@ -1,0 +1,181 @@
+La reconnaissance d'images en python donne une image d'entrée à un réseau neuronal (le réseau neuronal le plus populaire utilisé pour la reconnaissance d'images est Convolution Neural Network).
+
+Une matrice 2D, ou matrice bidimensionnelle, est une structure de données mathématique qui organise des éléments dans des lignes et des colonnes. Dans le contexte des images en niveaux de gris, chaque élément de la matrice représente la valeur de luminosité d'un pixel spécifique.
+
+*MLP signifie "Multilayer Perceptron", et c'est une architecture de réseau de neurones artificiels utilisée dans le domaine de l'apprentissage profond (deep learning). Il appartient à la famille des réseaux de neurones feedforward, ce qui signifie que l'information se propage à travers le réseau de manière unidirectionnelle, de l'entrée vers la sortie, sans rétroaction.
+
+*CNN signifie "Convolutional Neural Network" (Réseau de neurones convolutif). C'est une architecture de réseau de neurones particulièrement adaptée au traitement d'images et à la vision par ordinateur. Les CNN ont été largement utilisés avec succès dans des applications telles que la classification d'images, la détection d'objets, la reconnaissance faciale, et bien d'autres.
+
+*ANN signifie "Artificial Neural Network" (Réseau de neurones artificiels). C'est une architecture de modèle informatique inspirée du fonctionnement du cerveau humain et conçue pour effectuer des tâches d'apprentissage automatique et d'intelligence artificielle.
+
+
+---Doucumentation---
+->Reconnaissance de l'image en Python basée sur l'apprentissage automatique – Exemple et explication du modèle de classification d'images.
+
+Comment la reconnaissance de l'image fonctionne-t-elle en python
+
+La reconnaissance d'images en python donne une image d'entrée à un réseau neuronal (le réseau neuronal le plus populaire utilisé pour la reconnaissance d'images est Convolution Neural Network). C'est l'objet de notre article qui sera examiné en détail sous peu. La tâche est divisée principalement en deux catégories:
+
+1. Classification de l'image dans une seule catégorie/catégories multiples.
+
+2. Identification de certains objets dans une image (cela ne peut être fait qu'à des fins de détection, de segmentation, de suivi d'objets en vidéo, etc.)
+
+Bien que les tâches finales soient différentes, mais l'algorithme utilisé dans le réseau neuronal est le même. Le débit est le suivant:
+
+image recognition path
+
+L'image d'entrée est constituée de pixels. S'il s'agit d'une image en niveaux de gris (Image B/W), elle est affichée sous la forme d'une matrice 2D, et chaque pixel prend une plage de valeurs de 0 à 255. S'il s'agit de RGB Image (Image colorée), il est transformé en un tableau 3D où chaque couche représente une couleur.
+
+Discutons pas à pas du processus. Nous aborderons la couche en trois points principaux pour les trois premières étapes: le but, le fonctionnement et la sortie.
+
+ 
+1. Couche convolutive:
+
+But: Détecter certaines caractéristiques de l'image.
+
+Fonctionnement: La convolution de l'image d'entrée et du détecteur de caractéristiques (ou le filtre) est utilisée pour détecter certaines caractéristiques de l'image. La convolution se produit de la même manière que le traitement numérique du signal. La convolution se produit de la même manière que le traitement numérique du signal. Les valeurs du détecteur de fonction peuvent être prédéterminées si vous savez quelles caractéristiques à extraire de l'image, ou les valeurs peuvent être initialisées de manière aléatoire, et le processus d'entraînement en réseau détermine les meilleures valeurs de filtre qui correspondent à notre modèle.
+
+Sortie: La sortie de cette couche est appelée carte de caractéristiques. La taille de la carte des caractéristiques est inférieure à la taille de l'image. Ceci présente l'avantage de faciliter le processus de calcul. Un point à préciser est que la partie de l'information d'image est perdue en raison de la diminution de la taille de la production. Cependant, cela ne cause pas de problème car les valeurs de la carte des caractéristiques sont différentes de l'image d'origine car elles représentent les emplacements où la détection la plus élevée du filtre est effectuée.
+2. Rectificateur Relu:
+
+Objectif: augmenter la non-linéarité des images afin qu'elles puissent être facilement séparables. Normalement, les images sont très non linéaires parce qu'il y a beaucoup de détails liés à l'intensité, aux frontières, etc. La couche convolutive peut aboutir à des cartes de caractéristiques linéaires, donc cette étape est très cruciale.
+
+Fonctionnement: Un redresseur relu est appliqué à la carte des caractéristiques
+
+Sortie: La sortie de cette couche est une carte de caractéristiques avec une non-linéarité plus élevée.
+3. Couche maximale de poolage:
+
+Objet: Distinguer les caractéristiques si elles sont déformées. L'objectif principal est de détecter les caractéristiques même s'il y a une légère différence dans la caractéristique elle-même.
+
+Fonctionnement: La mise en commun maximale trouve la valeur maximale d'une certaine fenêtre. La couche maximale de mise en commun se déplace vers la gauche par un certain nombre d'étapes appelées pas.
+
+Produit: La sortie de cette couche est une carte de caractéristiques groupée. La carte des caractéristiques mise en commun présente de multiples avantages. La taille de la sortie est toujours plus petite. Des valeurs maximales sont toujours présentes, et ce sont les emplacements de la plus haute similitude avec le filtre en fonction. En outre, plus de 75 % des informations d'image qui ne sont pas liées à des caractéristiques ou sont inutiles sont supprimées. En outre, la carte des fonctionnalités devient de plus en plus importante pour la distorsion si la valeur de la caractéristique est décalée de son emplacement.
+
+Les couches convoltive et MaxPool peuvent être répétées plus d'une fois selon notre problème d'apprentissage automatique. Ensuite, nous ajoutons MLP au CNN existant. L'objectif principal de cette étape est d'augmenter le nombre d'attributs de caractéristiques pour faire de meilleures prédictions de classe.
+4. Aplatement
+
+Les nombres sont pris ligne par ligne, colonne par colonne et mis dans une seule colonne. Le but principal de cette étape est de convertir la matrice sortie de la couche précédente en un format qui peut être accepté par ANN.
+5. Couche entièrement connectée
+
+Il s'agit d'un réseau de neurones artificiels où l'entrée est la couche aplatie, suivie d'un groupe de couches entièrement connectées, enfin, de la couche de sortie selon des catégories que nous avons ou des objets qui doivent être détectés.
+
+ 
+Bibliothèques d'importation
+
+import tensorflow as tf
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+La bibliothèque ImageDataGenerator est nécessaire pour effectuer un prétraitement des données.
+Prétraitement des données
+
+train_datagen = ImageDataGenerator( rescale =1./255, zoom_range = 0.2, horizontal_flip = True)
+training_set = train_datagen.flow_from_directory('link to dataset directory',target_size = (64, 64),
+batch_size = 32,class_mode = 'binary')
+
+Pour l'ensemble de données d'apprentissage, le code supérieur est utilisé. La transformation sous forme (plage de zoom, fichier horizontal, ..etc.) est appliquée aux images d'entrée pour les rendre dans un format plus générique pour éviter le surajustement. La première ligne initialise tous les paramètres que vous souhaitez appliquer à votre ensemble de données. Cela inclut le zoom, le retournement, etc. . Les valeurs des paramètres peuvent être modifiées en fonction de la précision finale de la sortie de notre modèle. Pour plus d'informations sur toutes les options disponibles pour le prétraitement des données, consultez la documentation Keras au lien suivantlink. L'ensemble de données de formation de la seconde ligne à notre système de fichiers  le divise en une certaine taille de lot, identifie le mode de classification. Le modèle de classification peut prendre l'une des deux options, binaire pour une seule catégorie ou catégorie pour plusieurs catégories. En outre, la taille de cible d'image qui est prise en entrée dans le modèle CNN est initialisée.
+
+test_datagen = ImageDataGenerator(rescale = 1./255)
+test_set = test_datagen.flow_from_directory('dataset/test_set',
+target_size = (64, 64),batch_size = 32, class_mode = 'binary')
+
+Pour tester l'ensemble de données, le code est différent. Dans ce cas, le code est en phase de production, de sorte qu'aucun ajustement tel qu'un flip, un zoom, etc. ne peut être appliqué à la mise à l'échelle des caractéristiques d'image. La deuxième ligne est similaire à l'affaire dans l'ensemble de données de formation.
+Définition du modèle et formation
+
+La définition du modèle et la formation sont faites en quatre étapes principales:
+
+1. Première étape: Initialiser une instance de la classe
+
+cnn = tf.keras.models.Sequential()
+
+2. Deuxième étape: Initialiser le réseau convolutif
+
+    Couche convoluante initiale de CNN avec une forme d'entrée correspondent à la sortie d'image cible. Il est à noter que le filtre et la taille du noyau varient en conséquence.
+
+cnn.add(tf.keras.layers.Conv2D(filters=5, kernel_size=3, activation='relu', input_shape=[64, 64, 3])))
+
+ 
+
+    Ajouter la couche maximale de mise en commun, où la taille et les progrès du pool peuvent varier en conséquence.
+
+cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
+
+ 
+
+    Ajouter Convolution - Couche maximale de mise en commun selon l'architecture de réseau requise.
+
+cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'))
+cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
+
+ 
+
+    Ajouter une couche d'aplatir
+
+cnn.add(tf.keras.layers.Flatten())
+
+ 
+
+    Ajouter un réseau neuronal artificiel, où les couches et le nombre de neurones peuvent varier en conséquence.
+
+cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
+
+ 
+
+    Ajouter la sortie de la couche finale, où plusieurs neurones sont selon des catégories.
+
+cnn.add(tf.keras.layers.Dense(units=1, activation='relu'))
+
+ 
+
+3. Troisième étape: Compilation de CNN
+
+    Il y a plusieurs paramètres à initialiser dans la compilation du modèle de CNN, de l'optimiseur, de la fonction de perte et de la métrique pour mesurer les performances du modèle.
+
+ cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+ 
+
+4. Quatrième étape: Formation de CNN à l'ensemble de formation et à l'évaluation de l'ensemble de données d'essai.
+
+ cnn.fit(x = training_set, validation_data = test_set, epochs = 5)
+
+ 
+Évaluation des résultats
+=>Resultat
+
+Found 3 images belonging to 1 classes.
+Found 3 images belonging to 1 classes.
+Epoch 1/5
+1/1 [==============================] - ETA: 0s - loss: 0.0496 - accuracy: 0.3333
+2024-03-04 14:18:45.355317: W external/local_tsl/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 26569728 exceeds 10% of free system memory.
+1/1 [==============================] - 2s 2s/step - loss: 0.0496 - accuracy: 0.3333 - val_loss: 6.6048e-04 - val_accuracy: 0.0000e+00
+Epoch 2/5
+1/1 [==============================] - 0s 173ms/step - loss: 4.4539e-04 - accuracy: 0.0000e+00 - val_loss: 3.0147e-04 - val_accuracy: 0.0000e+00
+Epoch 3/5
+1/1 [==============================] - ETA: 0s - loss: 7.5343e-05 - accuracy: 0.0000e+00
+2024-03-04 14:18:45.813786: W external/local_tsl/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 26569728 exceeds 10% of free system memory.
+2024-03-04 14:18:45.989581: W external/local_tsl/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 26569728 exceeds 10% of free system memory.
+1/1 [==============================] - 0s 169ms/step - loss: 7.5343e-05 - accuracy: 0.0000e+00 - val_loss: 6.4035e-05 - val_accuracy: 0.3333
+Epoch 4/5
+1/1 [==============================] - 0s 153ms/step - loss: 1.5431e-04 - accuracy: 0.0000e+00 - val_loss: 0.0000e+00 - val_accuracy: 1.0000
+Epoch 5/5
+1/1 [==============================] - ETA: 0s - loss: 0.0000e+00 - accuracy: 1.0000
+2024-03-04 14:18:46.155157: W external/local_tsl/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 26569728 exceeds 10% of free system memory.
+2024-03-04 14:18:46.326238: W external/local_tsl/tsl/framework/cpu_allocator_impl.cc:83] Allocation of 26569728 exceeds 10% of free system memory.
+1/1 [==============================] - 0s 158ms/step - loss: 0.0000e+00 - accuracy: 1.0000 - val_loss: 0.0000e+00 - val_accuracy: 1.0000
+<keras.src.callbacks.History at 0x7fd0b5182dd0>
+
+La sortie que vous avez obtenue provient du processus d'entraînement de votre modèle avec la fonction fit de Keras. Voici une explication de quelques-uns des éléments dans cette sortie :
+
+    Found 3 images belonging to 1 classes: Cela indique que le générateur de données a trouvé 3 images dans votre ensemble d'entraînement (training_set), appartenant à 1 classe.
+
+    Found 3 images belonging to 1 classes: De manière similaire, cela indique que le générateur de données a trouvé 3 images dans votre ensemble de test (test_set), appartenant également à 1 classe.
+
+    Epoch 1/5: Cela représente la première époque (cycle complet d'entraînement) sur les 5 époques prévues pour l'entraînement du modèle.
+
+    loss: C'est la valeur de la fonction de perte sur l'ensemble d'entraînement. La fonction de perte mesure à quel point les prédictions du modèle diffèrent des vraies étiquettes.
+
+    accuracy: C'est la précision du modèle sur l'ensemble d'entraînement, mesurée en pourcentage. Elle représente le pourcentage d'images correctement classées.
+
+    val_loss: C'est la valeur de la fonction de perte sur l'ensemble de validation (dans votre cas, l'ensemble de test). Il mesure à quel point les prédictions du modèle diffèrent des vraies étiquettes sur l'ensemble de validation.
+
+    val_accuracy: C'est la précision du modèle sur l'ensemble de validation, mesurée en pourcentage.

@@ -1,0 +1,3 @@
+
+Reconization of image
+https://asperbrothers.com/blog/image-recognition-in-python/
